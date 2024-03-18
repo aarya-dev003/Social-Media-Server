@@ -1,19 +1,17 @@
 package com.example
 
-import com.example.plugins.*
-import com.example.repository.DatabaseFactory
-import com.sun.tools.javac.file.Locations
+import com.example.plugins.configureDatabases
+import com.example.plugins.configureRouting
+import com.example.plugins.configureSecurity
+import com.example.plugins.configureSerialization
 import io.ktor.server.application.*
-import io.ktor.websocket.WebSocketDeflateExtension.Companion.install
 
 fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
-//    install (Locations)
 }
 
 fun Application.module() {
 
-    DatabaseFactory.init()
     configureSecurity()
     configureSerialization()
     configureDatabases()
