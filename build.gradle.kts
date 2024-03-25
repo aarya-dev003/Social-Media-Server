@@ -1,11 +1,9 @@
-
+val commons_codec_version : String by project
 val ktor_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
+val kmongo_version : String by project
 
-val postgres_version: String by project
-val h2_version: String by project
-val exposed_version: String by project
 plugins {
     kotlin("jvm") version "1.9.22"
     id("io.ktor.plugin") version "2.3.7"
@@ -41,11 +39,16 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
     implementation("io.ktor:ktor-server-locations:$ktor_version")
 
-    //postgres version
-    implementation("org.postgresql:postgresql:$postgres_version")
-    //h2 for database
-    implementation("com.h2database:h2:$h2_version")
-    //exposed for database connection
-    implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
-    implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
+
+    //kmongo dependency
+    implementation("org.litote.kmongo:kmongo:$kmongo_version")
+    implementation("org.litote.kmongo:kmongo-coroutine:$kmongo_version")
+
+    //common codec dependency
+    implementation("commons-codec:commons-codec:$commons_codec_version")
+}
+ktor {
+    fatJar {
+        archiveFileName.set("mediverse.jar")
+    }
 }
