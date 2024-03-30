@@ -1,10 +1,8 @@
 package com.example.plugins
 
+import com.example.model.post.PostDataSource
 import com.example.model.user.UserDataSource
-import com.example.routes.authenticate
-import com.example.routes.getSecretInfo
-import com.example.routes.signIn
-import com.example.routes.signUp
+import com.example.routes.*
 import com.example.security.hashing.HashingService
 import com.example.security.token.TokenConfig
 import com.example.security.token.TokenService
@@ -20,7 +18,8 @@ fun Application.configureRouting(
     userDataSource: UserDataSource,
     hashingService: HashingService,
     tokenConfig: TokenConfig,
-    tokenService: TokenService
+    tokenService: TokenService,
+    postDataSource: PostDataSource
 ) {
     routing {
         get("/") {
@@ -29,13 +28,21 @@ fun Application.configureRouting(
 
         signUp(
             hashingService,
-            userDataSource
+            userDataSource,
+            tokenService,
+            tokenConfig
         )
         signIn(
             hashingService,
             userDataSource,
             tokenConfig,
             tokenService
+        )
+        clubPostRoute(
+            postDataSource
+        )
+        userPostRoute(
+            postDataSource
         )
         authenticate()
         getSecretInfo()

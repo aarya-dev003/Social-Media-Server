@@ -7,36 +7,45 @@ import com.example.security.token.TokenConfig
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
-import io.ktor.server.sessions.*
-import org.litote.kmongo.coroutine.CoroutineDatabase
 
-fun Application.configureSecurity(userDataSource: UserDataSource, config : TokenConfig) {
-    data class MySession(val count: Int = 0)
-    install(Sessions) {
-        cookie<MySession>("MY_SESSION") {
-            cookie.extensions["SameSite"] = "lax"
-        }
-    }
+fun Application.configureSecurity(userDataSource: UserDataSource, config: TokenConfig) {
 
 
     authentication {
-        jwt ("jwt"){
+        jwt("jwt") {
             realm = this@configureSecurity.environment.config.property("jwt.realm").getString()
             verifier(
                 JWT
-                    .require(Algorithm.HMAC256(config.secret))
+                    .require(Algorithm.HMAC512(config.secret))
                     .withAudience(config.audience)
                     .withIssuer(config.issuer)
                     .build()
             )
 
-            validate {
-                val payload = it.payload
-                val email = payload.getClaim("email").asString()
-                val user = userDataSource.getUserByEmail(email)
+            validate { credential ->
+                val payload = credential.payload
+                // Extract necessary claims from the token payload
+                val userId = payload.getClaim("userId").asString()
+
+                // Retrieve user from data source based on extracted userId
+                val user = userDataSource.getUserByEmail(userId)
+
                 user
+            }
+        }
+
+        jwt {
+            realm = this@configureSecurity.environment.config.property("jwt.realm").getString()
+            verifier(
+                JWT
+                    .require(Algorithm.HMAC512(config.secret))
+                    .withAudience(config.audience)
+                    .withIssuer(config.issuer)
+                    .build()
+            )
+            validate { credential ->
+                // Validate audience of the token
+                if (credential.payload.audience.contains(config.audience)) JWTPrincipal(credential.payload) else null
             }
         }
     }

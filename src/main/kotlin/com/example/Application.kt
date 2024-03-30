@@ -1,5 +1,6 @@
 package com.example
 
+import com.example.model.post.PostDataSourceImpl
 import com.example.model.user.UserDataSourceImpl
 import com.example.plugins.configureRouting
 import com.example.plugins.configureSecurity
@@ -24,7 +25,11 @@ fun Application.module() {
     ).coroutine
         .getDatabase(dbName)
 
+    //datasources
     val userDataSource  = UserDataSourceImpl(db)
+    val postDataSource = PostDataSourceImpl(db)
+
+    //security
     val tokenService = TokenServiceImpl()
     val tokenConfig = TokenConfig(
         issuer = environment.config.property("jwt.issuer").getString(),
@@ -36,5 +41,5 @@ fun Application.module() {
 
     configureSecurity(userDataSource,tokenConfig)
     configureSerialization()
-    configureRouting(userDataSource, hashingService, tokenConfig, tokenService)
+    configureRouting(userDataSource, hashingService, tokenConfig, tokenService, postDataSource)
 }

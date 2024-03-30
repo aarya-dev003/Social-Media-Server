@@ -41,6 +41,11 @@ val username : String,
 val name : String,
 val email : String , 
 val password : String 
+
+
+// this will be changed to 
+val email : String,
+val password : String
 ```
 
 
@@ -51,6 +56,9 @@ Example Request =
     "name" : "Aarya",
     "email" : "aarya2003",
     "password" : "aarya1223"
+    
+    // above code is for only testing purpose and will be changed to LoginRequest Data Class
+    
 }
 ```
 

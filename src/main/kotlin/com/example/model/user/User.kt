@@ -11,7 +11,7 @@ data class User(
     @BsonId
     val email : String ,
     val password : String,
-    val salt : String,
+    val salt : String ,
     @BsonId
     val id : ObjectId = ObjectId()
 ): Principal

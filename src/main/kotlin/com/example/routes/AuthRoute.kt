@@ -1,16 +1,17 @@
 package com.example.routes
 
-import ch.qos.logback.core.subst.Token
 import com.example.model.user.User
 import com.example.model.user.UserDataSource
 import com.example.requests.AuthRequest
 import com.example.requests.AuthResponse
-import com.example.routes.authenticate
+import com.example.requests.LoginRequest
 import com.example.security.hashing.HashingService
 import com.example.security.hashing.SaltedHash
 import com.example.security.token.TokenClaim
 import com.example.security.token.TokenConfig
 import com.example.security.token.TokenService
+import com.example.utils.Constants.LOGIN_END_POINT
+import com.example.utils.Constants.REGISTER_END_POINT
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -20,16 +21,13 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 
-const val API_VERSION = "v1"
-const val ROUTE_TYPE = "auth"
-const val REGISTER_END_POINT = "$API_VERSION/$ROUTE_TYPE/register"
-const val LOGIN_END_POINT = "$API_VERSION/$ROUTE_TYPE/login"
-
 fun Route.signUp(
     hashingService: HashingService,
-    userDataSource: UserDataSource
+    userDataSource: UserDataSource,
+    tokenService: TokenService,
+    tokenConfig : TokenConfig
 ){
-    post("$REGISTER_END_POINT"){
+    post(REGISTER_END_POINT){
         val request = kotlin.runCatching { call.receiveNullable<AuthRequest>() }.getOrNull() ?: kotlin.run {
             call.respond(HttpStatusCode.BadRequest, "Unable to get Data Class")
             return@post
@@ -57,7 +55,17 @@ fun Route.signUp(
             return@post
         }
 
-        call.respond(HttpStatusCode.OK , "User Inserted Into Database")
+        val token = tokenService.generate(
+            config = tokenConfig,
+            TokenClaim(
+                name = "userId",
+                value = user.email
+            )
+        )
+        call.respond(
+            status = HttpStatusCode.OK,
+            message = AuthResponse(token = token) ,
+        )
 
     }
 }
@@ -68,8 +76,8 @@ fun Route.signIn(
     tokenConfig: TokenConfig,
     tokenService: TokenService
 ){
-    post("$LOGIN_END_POINT"){
-        val request = kotlin.runCatching { call.receiveNullable<AuthRequest>() }.getOrNull() ?: kotlin.run {
+    post(LOGIN_END_POINT){
+        val request = kotlin.runCatching { call.receiveNullable<LoginRequest>() }.getOrNull() ?: kotlin.run {
             call.respond(HttpStatusCode.BadRequest, "Data Format wrong")
             return@post
         }
@@ -79,18 +87,23 @@ fun Route.signIn(
             return@post
         }
 
-        val isValidPassword :Boolean =hashingService.verify(
+        val isValidPassword :Boolean = hashingService.verify(
             value =request.password,
             saltedHash = SaltedHash(
             salt = user.salt,
             hash = user.password
         ))
 
+        if(!isValidPassword){
+            call.respond(HttpStatusCode.Conflict, "Invalid Credentails")
+            return@post
+        }
+
         val token = tokenService.generate(
             config = tokenConfig,
             TokenClaim(
                 name = "userId",
-                value = user.id.toString()
+                value = user.email
             )
         )
         call.respond(
@@ -101,19 +114,19 @@ fun Route.signIn(
 }
 
 fun Route.authenticate() {
-//    authenticate {
-//        get("authenticate") {
-//            call.respond(HttpStatusCode.OK)
-//        }
-//    }
+    authenticate {
+        get("authenticate") {
+            call.respond(HttpStatusCode.OK)
+        }
+    }
 }
 
 fun Route.getSecretInfo() {
-//    authenticate {
-//        get("secret") {
-//            val principal = call.principal<JWTPrincipal>()
-//            val userId = principal?.getClaim("userId", String::class)
-//            call.respond(HttpStatusCode.OK, "Your userId is $userId")
-//        }
-//    }
+    authenticate {
+        get("secret") {
+            val principal = call.principal<JWTPrincipal>()
+            val userId = principal?.getClaim("userId", String::class)
+            call.respond(HttpStatusCode.OK, "Your userId is $userId")
+        }
+    }
 }
