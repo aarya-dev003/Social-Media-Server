@@ -1,28 +1,26 @@
 package com.example.model.post
 
-import com.example.model.user.User
+import com.mongodb.client.model.Filters
+import org.bson.types.ObjectId
 import org.litote.kmongo.coroutine.CoroutineDatabase
 
 class PostDataSourceImpl (db: CoroutineDatabase): PostDataSource {
 
     private val posts = db.getCollection<Post>()
-    private val user = db.getCollection<User>()
     override suspend fun getAllPosts(): List<Post> {
         val post = posts.find().toList()
         return post
+    }
+
+    override suspend fun findOneByIdAndDelete(id: ObjectId?): Post? {
+        val filter = id?.let { Filters.eq("_id", it) } // Assuming "_id" is the field name in your collection for ObjectId
+        val delPost = filter?.let { posts.findOneAndDelete(it) }
+        return delPost
     }
 
     override suspend fun createPost(post: Post): Boolean {
         return posts.insertOne(post).wasAcknowledged()
     }
 
-    override suspend fun deletePost(id: String, email: String): Boolean {
-//        val filter = and(
-//            posts ::id eq ObjectId(id),
-//            posts ::email eq email
-//        )
 
-        val deleteResult = posts.deleteOne(id)
-        return deleteResult.wasAcknowledged()
-    }
 }

@@ -1,5 +1,6 @@
 package com.example
 
+import com.example.model.admin.ClubAdminImpl
 import com.example.model.post.PostDataSourceImpl
 import com.example.model.user.UserDataSourceImpl
 import com.example.plugins.configureRouting
@@ -28,6 +29,7 @@ fun Application.module() {
     //datasources
     val userDataSource  = UserDataSourceImpl(db)
     val postDataSource = PostDataSourceImpl(db)
+    val clubAdminDataSource = ClubAdminImpl(db)
 
     //security
     val tokenService = TokenServiceImpl()
@@ -39,7 +41,7 @@ fun Application.module() {
     )
     val hashingService = SHAHashingServiceImpl()
 
-    configureSecurity(userDataSource,tokenConfig)
+    configureSecurity(userDataSource,tokenConfig,clubAdminDataSource)
     configureSerialization()
-    configureRouting(userDataSource, hashingService, tokenConfig, tokenService, postDataSource)
+    configureRouting(userDataSource, hashingService, tokenConfig, tokenService, postDataSource, clubAdminDataSource)
 }
