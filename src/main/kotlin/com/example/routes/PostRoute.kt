@@ -1,5 +1,6 @@
 package com.example.routes
 
+import com.example.model.clubAdmin.Club
 import com.example.model.post.Post
 import com.example.model.post.PostDataSource
 import com.example.requests.PostRequest
@@ -26,8 +27,11 @@ fun Route.postRoutes(
                 call.respond(HttpStatusCode.BadRequest, "Request Not received")
                 return@post
             }
+
+            val username = call.principal<Club>()!!.username
+
             val  post = Post(
-                username = request.username,
+                username = username,
                 image = request.image,
                 description = request.description,
                 time = request.time
