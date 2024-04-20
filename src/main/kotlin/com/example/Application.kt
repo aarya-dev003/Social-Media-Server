@@ -1,11 +1,14 @@
 package com.example
 
-import com.example.model.admin.ClubAdminImpl
+import com.example.model.clubAdmin.ClubAdminImpl
+import com.example.model.collegeAdmin.CADSImpl
+import com.example.model.collegeAdmin.announcement.AnnouncementDSImpl
 import com.example.model.post.PostDataSourceImpl
 import com.example.model.user.UserDataSourceImpl
 import com.example.plugins.configureRouting
 import com.example.plugins.configureSecurity
 import com.example.plugins.configureSerialization
+import com.example.plugins.configureSockets
 import com.example.security.hashing.SHAHashingServiceImpl
 import com.example.security.token.TokenConfig
 import com.example.security.token.TokenServiceImpl
@@ -30,6 +33,8 @@ fun Application.module() {
     val userDataSource  = UserDataSourceImpl(db)
     val postDataSource = PostDataSourceImpl(db)
     val clubAdminDataSource = ClubAdminImpl(db)
+    val announcementDataSource = AnnouncementDSImpl(db)
+    val collegeAdminDataSource = CADSImpl(db)
 
     //security
     val tokenService = TokenServiceImpl()
@@ -41,7 +46,19 @@ fun Application.module() {
     )
     val hashingService = SHAHashingServiceImpl()
 
-    configureSecurity(userDataSource,tokenConfig,clubAdminDataSource)
+    configureSecurity(userDataSource,tokenConfig,clubAdminDataSource,collegeAdminDataSource)
     configureSerialization()
-    configureRouting(userDataSource, hashingService, tokenConfig, tokenService, postDataSource, clubAdminDataSource)
+    configureRouting(userDataSource,
+        hashingService,
+        tokenConfig,
+        tokenService,
+        postDataSource,
+        clubAdminDataSource,
+        announcementDataSource,
+        collegeAdminDataSource
+        )
+
+    //websocket
+    configureSockets()
+
 }

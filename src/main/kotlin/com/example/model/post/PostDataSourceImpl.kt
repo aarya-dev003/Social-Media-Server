@@ -8,7 +8,9 @@ class PostDataSourceImpl (db: CoroutineDatabase): PostDataSource {
 
     private val posts = db.getCollection<Post>()
     override suspend fun getAllPosts(): List<Post> {
-        val post = posts.find().toList()
+        val post = posts.find()
+            .descendingSort(Post :: time)
+            .toList()
         return post
     }
 

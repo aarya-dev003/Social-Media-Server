@@ -7,15 +7,17 @@ import com.example.requests.PostsDTO
 import com.example.utils.Constants.CREATE_END_POINT
 import com.example.utils.Constants.DELETE_END_POINT
 import com.example.utils.Constants.RETRIEVE_END_POINT
+import com.example.utils.Constants.RETRIEVE_END_POINT_USER
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+
 import org.bson.types.ObjectId
 
-fun Route.clubPostRoute(
+fun Route.postRoutes(
     postDataSource: PostDataSource
 ){
     authenticate("club-jwt"){
@@ -77,4 +79,19 @@ fun Route.clubPostRoute(
             }
         }
     }
+    authenticate("jwt"){
+        get(RETRIEVE_END_POINT_USER) {
+            try {
+                val posts = postDataSource.getAllPosts()
+                val postDTOs = posts.map { it.toDTO() } // Convert List<Post> to List<PostDTO>
+                call.respond(HttpStatusCode.OK, postDTOs)
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.Conflict, emptyList<PostsDTO>()) // Respond with empty list of PostDTO
+            }
+        }
+    }
+
 }
+
+//converted to data transfer object (DTO) or simply just filled the details from post class to postRequest
+fun Post.toDTO() = PostsDTO(username, image, description, time, id.toString())

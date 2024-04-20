@@ -1,10 +1,10 @@
-package com.example.model.admin
+package com.example.model.collegeAdmin
 
 import io.ktor.server.auth.*
 import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
 
-data class Club(
+data class Admin(
     @BsonId
     val username : String,
     @BsonId

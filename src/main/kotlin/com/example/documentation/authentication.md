@@ -1,11 +1,15 @@
 # Authentication Routes
+<hr>
 
-## Routes
+# User Routes
+
+
+
 
 <hr>
 
-### SignUp
-**End Point** = "/v1/auth/register" 
+## SignUp
+**End Point = "/v1/auth/register"**
 <br>
 <br>
 **Request** : Data Class
@@ -31,8 +35,8 @@ Response = ``` "User Inserted Into Database"```
 
 <hr>
 
-### SignIn
-**End Point** = "v1/auth/login"
+## SignIn
+**End Point = "v1/auth/login"**
 <br>
 <br>
 **Request** : Data Class

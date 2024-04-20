@@ -1,7 +1,7 @@
 package com.example.routes
 
-import com.example.model.admin.Club
-import com.example.model.admin.ClubAdminDataSource
+import com.example.model.clubAdmin.Club
+import com.example.model.clubAdmin.ClubAdminDataSource
 import com.example.requests.AuthResponse
 import com.example.requests.ClubLoginRequest
 import com.example.security.hashing.HashingService

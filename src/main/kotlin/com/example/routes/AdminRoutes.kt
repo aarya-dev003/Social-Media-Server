@@ -1,7 +1,7 @@
 package com.example.routes
 
-import com.example.model.admin.Club
-import com.example.model.admin.ClubAdminDataSource
+import com.example.model.clubAdmin.Club
+import com.example.model.clubAdmin.ClubAdminDataSource
 import com.example.requests.AuthResponse
 import com.example.requests.ClubAuthRequest
 import com.example.security.hashing.HashingService
@@ -11,6 +11,7 @@ import com.example.security.token.TokenService
 import com.example.utils.Constants.CREATE_CLUB
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -19,47 +20,50 @@ fun Route.createCLubAdmin(
     tokenConfig: TokenConfig,
     tokenService: TokenService,
     hashingService: HashingService,
-    clubAdminDataSource: ClubAdminDataSource
+    clubAdminDataSource: ClubAdminDataSource,
 ){
-    post(CREATE_CLUB){
-        val request = kotlin.runCatching { call.receiveNullable<ClubAuthRequest>() }.getOrNull() ?: kotlin.run {
-            call.respond(HttpStatusCode.BadRequest, "Unable to get Data Class")
-            return@post
-        }
+    authenticate("college-jwt"){
+        post(CREATE_CLUB) {
+            val request = kotlin.runCatching { call.receiveNullable<ClubAuthRequest>() }.getOrNull() ?: kotlin.run {
+                call.respond(HttpStatusCode.BadRequest, "Unable to get Data Class")
+                return@post
+            }
 
-        val areFieldBlank =request.username.isBlank() || request.email.isBlank() || request.password.isBlank()
-        val isPasswordTooShort =request.password.length < 8
-        if (areFieldBlank || isPasswordTooShort){
-            call.respond(HttpStatusCode.Conflict, "Fields are blank or password too short")
-            return@post
-        }
+            val areFieldBlank = request.username.isBlank() || request.email.isBlank() || request.password.isBlank()
+            val isPasswordTooShort = request.password.length < 8
+            if (areFieldBlank || isPasswordTooShort) {
+                call.respond(HttpStatusCode.Conflict, "Fields are blank or password too short")
+                return@post
+            }
 
-        val saltedHash =hashingService.generateSaltedHash(value = request.password)
-        val user = Club(
-            username = request.username,
-            email = request.email,
-            password = saltedHash.hash,
-            name = request.name,
-            salt = saltedHash.salt
-        )
-
-        val wasAcknowledged =clubAdminDataSource.insertUser(user)
-        if (!wasAcknowledged){
-            call.respond(HttpStatusCode.Conflict , "club cannot be inserted in database")
-            return@post
-        }
-
-        val token = tokenService.generate(
-            config = tokenConfig,
-            TokenClaim(
-                name = "adminId",
-                value = user.username
+            val saltedHash = hashingService.generateSaltedHash(value = request.password)
+            val user = Club(
+                username = request.username,
+                email = request.email,
+                password = saltedHash.hash,
+                name = request.name,
+                salt = saltedHash.salt
             )
-        )
-        call.respond(
-            status = HttpStatusCode.OK,
-            message = AuthResponse(token = token) ,
-        )
+
+            val wasAcknowledged = clubAdminDataSource.insertUser(user)
+            if (!wasAcknowledged) {
+                call.respond(HttpStatusCode.Conflict, "club cannot be inserted in database")
+                return@post
+            }
+
+            val token = tokenService.generate(
+                config = tokenConfig,
+                TokenClaim(
+                    name = "adminId",
+                    value = user.username
+                )
+            )
+            call.respond(
+                status = HttpStatusCode.OK,
+                message = AuthResponse(token = token),
+            )
+
+        }
 
     }
 }

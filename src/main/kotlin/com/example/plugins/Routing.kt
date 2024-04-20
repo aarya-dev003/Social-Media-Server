@@ -1,6 +1,8 @@
 package com.example.plugins
 
-import com.example.model.admin.ClubAdminDataSource
+import com.example.model.clubAdmin.ClubAdminDataSource
+import com.example.model.collegeAdmin.CollegeAdminDataSource
+import com.example.model.collegeAdmin.announcement.AnnouncementDataSource
 import com.example.model.post.PostDataSource
 import com.example.model.user.UserDataSource
 import com.example.routes.*
@@ -17,13 +19,16 @@ fun Application.configureRouting(
     tokenConfig: TokenConfig,
     tokenService: TokenService,
     postDataSource: PostDataSource,
-    clubAdminDataSource: ClubAdminDataSource
+    clubAdminDataSource: ClubAdminDataSource,
+    announcementDataSource: AnnouncementDataSource,
+    collegeAdminDataSource: CollegeAdminDataSource
 ) {
     routing {
         get("/") {
             call.respondText("Hello MediVerse!")
         }
 
+        //user
         signUp(
             hashingService,
             userDataSource,
@@ -36,22 +41,37 @@ fun Application.configureRouting(
             tokenConfig,
             tokenService
         )
-        clubPostRoute(
-            postDataSource
-        )
-        userPostRoute(
-            postDataSource
-        )
 
-        clubLogin(hashingService,tokenConfig,tokenService, clubAdminDataSource)
 
-        createCLubAdmin(tokenConfig, tokenService, hashingService, clubAdminDataSource)
-
-        authenticateClub()
-        getSecretInfoOfCLub()
 
         authenticate()
         getSecretInfo()
+
+
+        //club
+        clubLogin(hashingService,tokenConfig,tokenService, clubAdminDataSource)
+
+        createCLubAdmin(tokenConfig, tokenService, hashingService, clubAdminDataSource)
+        authenticateClub()
+        getSecretInfoOfCLub()
+
+
+        //college admin
+        createAdmin(tokenConfig, tokenService, hashingService, collegeAdminDataSource)
+        adminLogin(hashingService, tokenConfig, tokenService, collegeAdminDataSource)
+
+        //announcemnt
+        announcementRoutes(announcementDataSource)
+
+
+        //posts
+        postRoutes(
+            postDataSource
+        )
+
+
+
+
     }
 
 }

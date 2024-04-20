@@ -1,4 +1,4 @@
-package com.example.model.admin
+package com.example.model.clubAdmin
 
 import org.litote.kmongo.coroutine.CoroutineDatabase
 import org.litote.kmongo.eq

@@ -3,6 +3,7 @@ val ktor_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
 val kmongo_version : String by project
+val koin_ktor : String by project
 
 plugins {
     kotlin("jvm") version "1.9.22"
@@ -30,6 +31,8 @@ dependencies {
     implementation("io.ktor:ktor-server-content-negotiation-jvm")
     implementation("io.ktor:ktor-serialization-gson-jvm")
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm")
+    //session
+    implementation("io.ktor:ktor-server-sessions:$ktor_version")
 
     implementation("io.ktor:ktor-server-auth-jvm")
     implementation("io.ktor:ktor-server-auth-jwt-jvm")
@@ -46,6 +49,17 @@ dependencies {
 
     //common codec dependency
     implementation("commons-codec:commons-codec:$commons_codec_version")
+
+    //websocket dependency
+    implementation("io.ktor:ktor-server-websockets:$ktor_version")
+
+    //koin
+    implementation("io.insert-koin:koin-core:$koin_ktor")
+
+    implementation("io.insert-koin:koin-ktor:$koin_ktor")
+    // SLF4J Logger
+    implementation("io.insert-koin:koin-logger-slf4j:$koin_ktor")
+
 }
 ktor {
     fatJar {

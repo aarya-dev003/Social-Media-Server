@@ -1,4 +1,4 @@
-package com.example.model.admin
+package com.example.model.clubAdmin
 
 interface ClubAdminDataSource {
     suspend fun getAdminByEmail(username: String) : Club?
