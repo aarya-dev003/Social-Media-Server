@@ -3,6 +3,7 @@ package com.example.plugins
 import com.example.model.clubAdmin.ClubAdminDataSource
 import com.example.model.collegeAdmin.CollegeAdminDataSource
 import com.example.model.collegeAdmin.announcement.AnnouncementDataSource
+import com.example.model.feedback.FeedbackDataSource
 import com.example.model.post.PostDataSource
 import com.example.model.user.UserDataSource
 import com.example.routes.*
@@ -21,7 +22,8 @@ fun Application.configureRouting(
     postDataSource: PostDataSource,
     clubAdminDataSource: ClubAdminDataSource,
     announcementDataSource: AnnouncementDataSource,
-    collegeAdminDataSource: CollegeAdminDataSource
+    collegeAdminDataSource: CollegeAdminDataSource,
+    feedbackDataSource: FeedbackDataSource
 ) {
     routing {
         get("/") {
@@ -68,6 +70,8 @@ fun Application.configureRouting(
         postRoutes(
             postDataSource
         )
+
+        feedbackRoute(feedbackDataSource)
 
 
 

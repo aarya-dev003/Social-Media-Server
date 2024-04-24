@@ -3,6 +3,7 @@ package com.example
 import com.example.model.clubAdmin.ClubAdminImpl
 import com.example.model.collegeAdmin.CADSImpl
 import com.example.model.collegeAdmin.announcement.AnnouncementDSImpl
+import com.example.model.feedback.FeedbackDataSourceImpl
 import com.example.model.post.PostDataSourceImpl
 import com.example.model.user.UserDataSourceImpl
 import com.example.plugins.configureRouting
@@ -35,6 +36,7 @@ fun Application.module() {
     val clubAdminDataSource = ClubAdminImpl(db)
     val announcementDataSource = AnnouncementDSImpl(db)
     val collegeAdminDataSource = CADSImpl(db)
+    val feedbackDataSource = FeedbackDataSourceImpl(db)
 
     //security
     val tokenService = TokenServiceImpl()
@@ -55,7 +57,8 @@ fun Application.module() {
         postDataSource,
         clubAdminDataSource,
         announcementDataSource,
-        collegeAdminDataSource
+        collegeAdminDataSource,
+        feedbackDataSource
         )
 
     //websocket

@@ -49,5 +49,11 @@ object Constants {
 
     const val SEARCH_ANNOUNCEMENT = "$API_VERSION/$ANNOUNCEMENT_TYPE/search"
 
+    //feedback
+    private const val FEEDBACK = "feedback"
+    const val CREATE_FEEDBACK = "$API_VERSION/$USER/$FEEDBACK/create"
+    const val GET_FEEDBACK_ADMIN = "$API_VERSION/$AUTH_TYPE/$FEEDBACK/get"
+    const val GET_FEEDBACK_CLUB = "$API_VERSION/$LOGIN_TYPE/$FEEDBACK/get"
+
 
 }
