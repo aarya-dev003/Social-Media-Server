@@ -60,6 +60,9 @@ dependencies {
     // SLF4J Logger
     implementation("io.insert-koin:koin-logger-slf4j:$koin_ktor")
 
+    //dot env
+    implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
+
 }
 ktor {
     fatJar {
