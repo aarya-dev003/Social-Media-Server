@@ -11,7 +11,7 @@ import com.example.security.token.TokenClaim
 import com.example.security.token.TokenConfig
 import com.example.security.token.TokenService
 import com.example.utils.Constants.GET_AUTHENTICATED_CLUB
-import com.example.utils.Constants.GET_CLUB_DATA
+import com.example.utils.Constants.GET_CLUB
 import com.example.utils.Constants.GET_SECRET_CLUB
 import com.example.utils.Constants.LOGIN_CLUB_ADMIN
 import io.ktor.http.*
@@ -65,7 +65,7 @@ fun Route.clubLogin(
     }
 
     authenticate("club-jwt") {
-        get(GET_CLUB_DATA) {
+        get(GET_CLUB) {
             try {
                 val response = call.principal<Club>()!!
                 val clubDto =
