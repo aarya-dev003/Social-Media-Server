@@ -3,12 +3,15 @@ package com.example.routes
 import com.example.model.clubAdmin.Club
 import com.example.model.post.Post
 import com.example.model.post.PostDataSource
+import com.example.model.post.SearchPost
 import com.example.requests.PostRequest
 import com.example.requests.PostsDTO
 import com.example.utils.Constants.CREATE_END_POINT
 import com.example.utils.Constants.DELETE_END_POINT
 import com.example.utils.Constants.RETRIEVE_END_POINT
 import com.example.utils.Constants.RETRIEVE_END_POINT_USER
+import com.example.utils.Constants.SEARCH_POST
+import com.example.utils.Constants.SEARCH_POST_CLUB
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -82,6 +85,21 @@ fun Route.postRoutes(
                 call.respond(HttpStatusCode.InternalServerError, "Failed to delete post: ${e.message}")
             }
         }
+
+        get(SEARCH_POST_CLUB){
+            try {
+                val request = kotlin.runCatching { call.receiveNullable<SearchPost>() }.getOrNull() ?: kotlin.run {
+                    call.respond(HttpStatusCode.BadRequest, "Request Not received")
+                    return@get
+                }
+                val posts = postDataSource.searchPostByClub(request.club_id)
+                val postDTOs = posts.map { it.toDTO() } // Convert List<Post> to List<PostDTO>
+                call.respond(HttpStatusCode.OK, postDTOs)
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.Conflict, emptyList<PostsDTO>()) // Respond with empty list of PostDTO
+            }
+        }
+
     }
     authenticate("jwt"){
         get(RETRIEVE_END_POINT_USER) {
@@ -93,6 +111,21 @@ fun Route.postRoutes(
                 call.respond(HttpStatusCode.Conflict, emptyList<PostsDTO>()) // Respond with empty list of PostDTO
             }
         }
+
+        get(SEARCH_POST){
+            try {
+                val request = kotlin.runCatching { call.receiveNullable<SearchPost>() }.getOrNull() ?: kotlin.run {
+                    call.respond(HttpStatusCode.BadRequest, "Request Not received")
+                    return@get
+                }
+                val posts = postDataSource.searchPostByClub(request.club_id)
+                val postDTOs = posts.map { it.toDTO() } // Convert List<Post> to List<PostDTO>
+                call.respond(HttpStatusCode.OK, postDTOs)
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.Conflict, emptyList<PostsDTO>()) // Respond with empty list of PostDTO
+            }
+        }
+
     }
 
 }

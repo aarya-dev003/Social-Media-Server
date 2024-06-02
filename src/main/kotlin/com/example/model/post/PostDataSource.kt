@@ -10,5 +10,6 @@ interface PostDataSource {
 
     suspend fun createPost(post : Post) :Boolean
 
+    suspend fun searchPostByClub(clubId : String): List<Post>
 
 }
