@@ -28,6 +28,7 @@ object Constants {
     const val LOGIN_CLUB_ADMIN = "$API_VERSION/$ROUTE_TYPE/$LOGIN_TYPE/login"
     const val GET_AUTHENTICATED_CLUB = "$API_VERSION/$ROUTE_TYPE/$LOGIN_TYPE/authenticate"
     const val GET_SECRET_CLUB = "$API_VERSION/$ROUTE_TYPE/$LOGIN_TYPE/secret"
+    const val GET_CLUB_DATA = "$API_VERSION/$LOGIN_TYPE/get"
 
 
     //college Admin

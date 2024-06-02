@@ -15,5 +15,5 @@ data class Club(
     val salt : String ,
     @BsonId
     val id : ObjectId = ObjectId(),
-    val imageUrl : String
+    val imageUrl : String?
 ): Principal
