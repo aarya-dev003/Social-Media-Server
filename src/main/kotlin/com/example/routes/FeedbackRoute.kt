@@ -23,7 +23,7 @@ fun Route.feedbackRoute(
                 call.respond(HttpStatusCode.BadRequest, "Request Not received")
                 return@post
             }
-            val username = call.principal<User>()!!.email
+            val username = call.principal<User>()!!.username
 
             val feedback = Feedback(
                 issueType = request.issueType,

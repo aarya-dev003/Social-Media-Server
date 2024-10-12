@@ -11,5 +11,6 @@ data class ClubAuthRequest(
     val name : String,
     @BsonId
     val email : String ,
-    val password : String
+    val password : String,
+    val imageUrl : String?
 )

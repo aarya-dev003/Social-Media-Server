@@ -42,7 +42,8 @@ fun Route.createCLubAdmin(
                 email = request.email,
                 password = saltedHash.hash,
                 name = request.name,
-                salt = saltedHash.salt
+                salt = saltedHash.salt,
+                imageUrl = request.imageUrl
             )
 
             val wasAcknowledged = clubAdminDataSource.insertUser(user)

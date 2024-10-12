@@ -3,6 +3,7 @@ package com.example.routes
 import com.example.model.clubAdmin.Club
 import com.example.model.clubAdmin.ClubAdminDataSource
 import com.example.requests.AuthResponse
+import com.example.requests.ClubDto
 import com.example.requests.ClubLoginRequest
 import com.example.security.hashing.HashingService
 import com.example.security.hashing.SaltedHash
@@ -10,6 +11,7 @@ import com.example.security.token.TokenClaim
 import com.example.security.token.TokenConfig
 import com.example.security.token.TokenService
 import com.example.utils.Constants.GET_AUTHENTICATED_CLUB
+import com.example.utils.Constants.GET_CLUB
 import com.example.utils.Constants.GET_SECRET_CLUB
 import com.example.utils.Constants.LOGIN_CLUB_ADMIN
 import io.ktor.http.*
@@ -61,7 +63,24 @@ fun Route.clubLogin(
         )
 
     }
+
+    authenticate("club-jwt") {
+        get(GET_CLUB) {
+            try {
+                val response = call.principal<Club>()!!
+                val clubDto =
+                    response.let { ClubDto(username = it.username, name = it.name, imageUrl = it.imageUrl, email = it.email) }
+                call.respond(HttpStatusCode.OK, clubDto)
+            } catch (e: Exception) {
+                // Handle exception
+                call.respond(HttpStatusCode.InternalServerError, "Not Able to Fetch Club Details")
+            }
+        }
+    }
+
+
 }
+
 
 
 fun Route.authenticateClub() {

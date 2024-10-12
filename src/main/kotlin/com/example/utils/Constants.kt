@@ -19,6 +19,8 @@ object Constants {
     const val RETRIEVE_END_POINT = "$API_VERSION/$POST_TYPE/get"
     const val RETRIEVE_END_POINT_USER = "$API_VERSION/$USER/$POST_TYPE/get"
 
+    const val SEARCH_POST = "$API_VERSION/$POST_TYPE/search/user"
+    const val SEARCH_POST_CLUB = "$API_VERSION/$POST_TYPE/search/club"
     const val DELETE_END_POINT = "$API_VERSION/$POST_TYPE/delete/{id}"
 
     //for club admin
@@ -26,6 +28,7 @@ object Constants {
     const val LOGIN_CLUB_ADMIN = "$API_VERSION/$ROUTE_TYPE/$LOGIN_TYPE/login"
     const val GET_AUTHENTICATED_CLUB = "$API_VERSION/$ROUTE_TYPE/$LOGIN_TYPE/authenticate"
     const val GET_SECRET_CLUB = "$API_VERSION/$ROUTE_TYPE/$LOGIN_TYPE/secret"
+    const val GET_CLUB = "$API_VERSION/$LOGIN_TYPE/get"
 
 
     //college Admin
@@ -47,13 +50,15 @@ object Constants {
     const val GET_ANNOUNCEMENT_USER = "$API_VERSION/$USER/$ANNOUNCEMENT_TYPE/get"
     const val GET_ANNOUNCEMENT_CLUB = "$API_VERSION/$LOGIN_TYPE/$ANNOUNCEMENT_TYPE/get"
 
-    const val SEARCH_ANNOUNCEMENT = "$API_VERSION/$ANNOUNCEMENT_TYPE/search"
+
 
     //feedback
     private const val FEEDBACK = "feedback"
     const val CREATE_FEEDBACK = "$API_VERSION/$USER/$FEEDBACK/create"
     const val GET_FEEDBACK_ADMIN = "$API_VERSION/$AUTH_TYPE/$FEEDBACK/get"
     const val GET_FEEDBACK_CLUB = "$API_VERSION/$LOGIN_TYPE/$FEEDBACK/get"
+
+
 
 
 }
